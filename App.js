@@ -1,31 +1,61 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, ImageBackground, StyleSheet, Text, View } from "react-native";
-import { Image } from "react-native";
+import {
+  SafeAreaView,
+  Animated,
+  Button,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useRef, useEffect } from "react";
+import {} from "react-native";
 
 export default function App() {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    fadeIn();
+  }, []);
+
+  const fadeIn = () => {
+    // Will change fadeAnim value to 1 in 5 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ImageBackground
         style={styles.logo}
         source={require("./images/mainImage.jpg")}
       >
-        <View style={{ flex: 0.3 }}>
-          <Text style={{ fontSize: 36, fontWeight: "bold", color: "white" }}>
+        <Animated.View style={{ flex: 0.4, opacity: fadeAnim }}>
+          <Text
+            style={{
+              fontSize: 36,
+              fontWeight: "bold",
+              color: "white",
+            }}
+          >
             MyFitnesApp
           </Text>
-        </View>
-        <Text style={{ color: "white", flex: 0.3 }}>
-          Open up App.js to start working on your app!
+        </Animated.View>
+        <Text style={{ color: "white", flex: 0.4 }}>
+          Startseite meines Fitness-App Projects
         </Text>
         <Button
           title="Start"
-          style={{ flex: 0.3 }}
+          style={{ flex: 0.2 }}
           onPress={() => alert("klappt")}
         />
       </ImageBackground>
 
-      <StatusBar style="auto" />
-    </View>
+      <StatusBar style="inverted" />
+    </SafeAreaView>
   );
 }
 
