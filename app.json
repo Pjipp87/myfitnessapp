@@ -7,9 +7,9 @@
     "icon": "./assets/dumbbellIcon.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/MotivationSplash.jpg",
+      "image": "./assets/MotivationSplash.png",
       "resizeMode": "contain",
-      "backgroundColor": "black"
+      "backgroundColor": "#000000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
