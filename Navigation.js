@@ -1,9 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Startpage from "./Components/Startpage";
 import WelcomeScreen from "./Components/WelcomeScreen";
-
+import ProfileScreen from "./Components/ProfileScreen";
+import SettingsScreen from "./Components/SettingsScreen";
+import WorkoutScreen from "./Components/WorkoutScreen";
 import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -19,10 +20,14 @@ export default function Navigation() {
         tabBarLabelStyle: { color: "white" },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "Startpage") {
+          if (route.name === "Startseite") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "WelcomeScreen") {
+          } else if (route.name === "Workout") {
             iconName = focused ? "barbell-sharp" : "barbell-outline";
+          } else if (route.name === "Profil") {
+            iconName = focused ? "person-circle" : "person-circle-outline";
+          } else if (route.name === "Einstellungen") {
+            iconName = focused ? "settings" : "settings-outline";
           }
 
           // You can return any component that you like here!
@@ -30,17 +35,13 @@ export default function Navigation() {
         },
         tabBarActiveTintColor: "white",
         tabBarInactiveTintColor: "grey",
+        headerTitleAlign: "center",
       })}
     >
-      <Tab.Screen name="Startpage" component={Startpage} />
-      <Tab.Screen
-        name="WelcomeScreen"
-        component={WelcomeScreen}
-        options={{
-          headerTitle: "Willkommen",
-          headerTitleAlign: "center",
-        }}
-      />
+      <Tab.Screen name="Startseite" component={WelcomeScreen} />
+      <Tab.Screen name="Workout" component={WorkoutScreen} />
+      <Tab.Screen name="Profil" component={ProfileScreen} />
+      <Tab.Screen name="Einstellungen" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }

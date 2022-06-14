@@ -2,13 +2,15 @@ import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaView,
   Animated,
-  Button,
   ImageBackground,
   StyleSheet,
   Text,
+  View,
 } from "react-native";
 import React, { useRef, useEffect } from "react";
 import {} from "react-native";
+import { Button } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function Startpage({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -27,43 +29,55 @@ export default function Startpage({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ImageBackground
-        style={styles.logo}
-        source={require("../images/mainImage.jpg")}
+    <ImageBackground
+      style={styles.background}
+      source={require("../images/BackgroundImages/StartupPageBackground.jpg")}
+    >
+      <Animated.View
+        style={{
+          flex: 0.5,
+          opacity: fadeAnim,
+          justifyContent: "center",
+        }}
       >
-        <Animated.View style={{ flex: 0.4, opacity: fadeAnim }}>
-          <Text
-            style={{
-              fontSize: 36,
-              fontWeight: "bold",
-              color: "white",
-            }}
-          >
-            MyFitnesApp
-          </Text>
-        </Animated.View>
-        <Text style={{ color: "white", flex: 0.4 }}>
-          Startseite meines Fitness-App Projects
+        <Text
+          style={{
+            fontSize: 36,
+            fontWeight: "bold",
+            color: "white",
+            paddingBottom: "50%",
+          }}
+        >
+          MyFitnessPal
         </Text>
+      </Animated.View>
+      <View
+        style={{
+          flex: 0.5,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Button
-          title="Start"
-          style={{ flex: 0.2 }}
+          style={{ marginTop: "50%", backgroundColor: "blue" }}
+          icon={"arm-flex-outline"}
           onPress={() => navigation.navigate("Navigation")}
-        />
-      </ImageBackground>
-
-      <StatusBar style="inverted" />
-    </SafeAreaView>
+          mode="contained"
+          textColor="red"
+          labelStyle={{ color: "white", fontSize: 24, fontWeight: "bold" }}
+        >
+          Start
+        </Button>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-  },
-  logo: {
-    flex: 1,
+    justifyContent: "flex-end",
+    alignContent: "space-between",
     width: "100%",
     height: "100%",
     alignItems: "center",
