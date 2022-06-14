@@ -1,59 +1,30 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  SafeAreaView,
-  Animated,
-  Button,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import React, { useRef, useEffect } from "react";
-import {} from "react-native";
+import Navigation from "./Navigation";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet, SafeAreaView, StatusBar } from "react-native";
+import Startpage from "./Components/Startpage";
+import { createStackNavigator } from "@react-navigation/stack";
+import WelcomeScreen from "./Components/WelcomeScreen";
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    fadeIn();
-  }, []);
-
-  const fadeIn = () => {
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <ImageBackground
-        style={styles.logo}
-        source={require("./images/mainImage.jpg")}
-      >
-        <Animated.View style={{ flex: 0.4, opacity: fadeAnim }}>
-          <Text
-            style={{
-              fontSize: 36,
-              fontWeight: "bold",
-              color: "white",
-            }}
-          >
-            MyFitnesApp
-          </Text>
-        </Animated.View>
-        <Text style={{ color: "white", flex: 0.4 }}>
-          Startseite meines Fitness-App Projects
-        </Text>
-        <Button
-          title="Start"
-          style={{ flex: 0.2 }}
-          onPress={() => alert("klappt")}
-        />
-      </ImageBackground>
-
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Startpage"
+            component={Startpage}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Navigation"
+            component={Navigation}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
       <StatusBar style="inverted" />
     </SafeAreaView>
   );
@@ -62,13 +33,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  logo: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    alignItems: "center",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
