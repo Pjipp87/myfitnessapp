@@ -1,28 +1,21 @@
 import { View, ImageBackground, StyleSheet } from "react-native";
 import { Button, Headline, Text } from "react-native-paper";
 import React, { useRef } from "react";
-import AppLoading from "expo-app-loading";
+//import AppLoading from "expo-app-loading";
 import {
   useFonts,
   BlackOpsOne_400Regular,
 } from "@expo-google-fonts/black-ops-one";
 import { Animated } from "react-native";
+import TypeWriter from "react-native-typewriter";
 
 export default function WelcomeScreen() {
   let [fontsLoaded] = useFonts({
     BlackOpsOne_400Regular,
   });
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null;
   }
-
-  const AnimateColor = () => {
-    Animated.timing(colorAnimation, {
-      toValue: "red",
-      duration: 3000,
-      useNativeDriver: true,
-    }).start();
-  };
 
   return (
     <ImageBackground
@@ -30,7 +23,8 @@ export default function WelcomeScreen() {
       source={require("../images/BackgroundImages/WelcomeScreenBackground.jpg")}
     >
       <View style={{ flex: 0.2, elevation: 50 }}>
-        <Headline
+        <TypeWriter
+          typing={1}
           style={{
             flex: 0.5,
             justifyContent: "center",
@@ -41,7 +35,7 @@ export default function WelcomeScreen() {
           }}
         >
           Zeit fürs Training
-        </Headline>
+        </TypeWriter>
       </View>
       <View style={{ flex: 0.7 }}>
         <Button>Text</Button>
