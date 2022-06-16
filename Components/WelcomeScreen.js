@@ -9,7 +9,7 @@ import {
 import { Animated } from "react-native";
 import TypeWriter from "react-native-typewriter";
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }) {
   let [fontsLoaded] = useFonts({
     BlackOpsOne_400Regular,
   });
@@ -38,7 +38,14 @@ export default function WelcomeScreen() {
         </TypeWriter>
       </View>
       <View style={{ flex: 0.7 }}>
-        <Button>Text</Button>
+        <Button
+          icon="plus"
+          mode="contained"
+          style={{ backgroundColor: "grey" }}
+          onPress={() => navigation.navigate("CreateWorkout")}
+        >
+          Workout erstellen
+        </Button>
         <Text style={{ color: "blue" }}>Hallo</Text>
       </View>
     </ImageBackground>
