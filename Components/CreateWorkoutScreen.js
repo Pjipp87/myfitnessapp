@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Keyboard,
+  ScrollView,
+  SafeAreaView,
+  Touchable,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import { TextInput, Button, Portal, Modal } from "react-native-paper";
@@ -6,27 +15,22 @@ import {
   useFonts,
   BlackOpsOne_400Regular,
 } from "@expo-google-fonts/black-ops-one";
-
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
+import { v4 as uuidv4 } from "uuid";
 
 const Item = ({ title }) => (
-  <View style={{ paddingVertical: 5 }}>
+  <View
+    style={{
+      paddingVertical: 5,
+      elevation: 10,
+      height: "100%",
+      backgroundColor: "white",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    }}
+  >
     <Text
       style={{
-        backgroundColor: "white",
         textAlign: "center",
         fontFamily: "BlackOpsOne_400Regular",
         paddingVertical: 10,
@@ -35,6 +39,7 @@ const Item = ({ title }) => (
     >
       {title}
     </Text>
+    <Button>Löschen</Button>
   </View>
 );
 
@@ -42,6 +47,10 @@ export default function CreateWorkoutScreen({ navigation }) {
   const [newWorkoutName, setNewWorkoutName] = useState("");
   const [showNameModal, setShowNameModal] = useState(true);
   const [frameOpacity, setFrameOpacity] = useState(0);
+  const [exericeName, setExercieName] = useState("");
+  const [listArr, setListArr] = useState([]);
+
+  useEffect(() => {}, [DATA]);
 
   let [fontsLoaded] = useFonts({
     BlackOpsOne_400Regular,
@@ -49,6 +58,21 @@ export default function CreateWorkoutScreen({ navigation }) {
   if (!fontsLoaded) {
     return null;
   }
+
+  let DATA = [
+    {
+      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+      title: "First Item",
+    },
+    {
+      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+      title: "Second Item",
+    },
+    {
+      id: "58694a0f-3da1-471f-bd96-145571e29d72",
+      title: "Third Item",
+    },
+  ];
 
   const nameNewWorkout = () => {
     if (newWorkoutName !== "") {
@@ -58,6 +82,13 @@ export default function CreateWorkoutScreen({ navigation }) {
     }
   };
 
+  const addToList = () => {
+    var tempArr = [...listArr, { id: uuidv4(), title: exericeName }];
+    setListArr(tempArr);
+    setExercieName("");
+    Keyboard.dismiss();
+  };
+
   //####################################################################
 
   const renderItem = ({ item }) => <Item title={item.title} />;
@@ -65,131 +96,132 @@ export default function CreateWorkoutScreen({ navigation }) {
   //#####################################################################
 
   return (
-    <Portal>
-      <ImageBackground
-        source={require("../images/BackgroundImages/iron-plate.jpg")}
-        style={{ flex: 1 }}
-      >
-        <Portal>
-          <Modal visible={showNameModal}>
-            <View
+    <ImageBackground
+      source={require("../images/BackgroundImages/iron-plate.jpg")}
+      style={{ flex: 1 }}
+    >
+      <Portal>
+        <Modal visible={showNameModal}>
+          <View
+            style={{
+              paddingVertical: 20,
+              backgroundColor: "grey",
+              borderWidth: 5,
+            }}
+          >
+            <Text
               style={{
-                paddingVertical: 20,
-                backgroundColor: "grey",
-                borderWidth: 5,
+                fontSize: 36,
+                color: "white",
+                textAlign: "center",
+                elevation: 30,
+                fontFamily: "BlackOpsOne_400Regular",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 36,
-                  color: "white",
-                  textAlign: "center",
-                  elevation: 30,
-                  fontFamily: "BlackOpsOne_400Regular",
-                }}
+              Neues Workout:
+            </Text>
+            <TextInput
+              style={styles.textInputField}
+              label="Workout Name"
+              mode={"outlined"}
+              selectionColor="blue"
+              activeOutlineColor="black"
+              onChangeText={(text) => setNewWorkoutName(text)}
+            ></TextInput>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+            >
+              <Button
+                mode="contained"
+                labelStyle={{ fontFamily: "BlackOpsOne_400Regular" }}
+                onPress={() => navigation.navigate("Navigation")}
               >
-                Neues Workout:
-              </Text>
-              <TextInput
-                style={styles.textInputField}
-                label="Workout Name"
-                mode={"outlined"}
-                selectionColor="blue"
-                activeOutlineColor="black"
-                onChangeText={(text) => setNewWorkoutName(text)}
-              ></TextInput>
-              <View
-                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+                Abbrechen
+              </Button>
+              <Button
+                mode="contained"
+                labelStyle={{ fontFamily: "BlackOpsOne_400Regular" }}
+                onPress={() => nameNewWorkout()}
               >
-                <Button
-                  mode="contained"
-                  labelStyle={{ fontFamily: "BlackOpsOne_400Regular" }}
-                  onPress={() => navigation.navigate("Navigation")}
-                >
-                  Abbrechen
-                </Button>
-                <Button
-                  mode="contained"
-                  labelStyle={{ fontFamily: "BlackOpsOne_400Regular" }}
-                  onPress={() => nameNewWorkout()}
-                >
-                  Hinzufügen
-                </Button>
-              </View>
+                Hinzufügen
+              </Button>
             </View>
-          </Modal>
-        </Portal>
+          </View>
+        </Modal>
+      </Portal>
 
-        <View style={{ opacity: frameOpacity }}>
-          <Text
-            style={{
-              paddingVertical: 30,
-              fontSize: 30,
-              color: "white",
-              textAlign: "center",
+      <View style={{ opacity: frameOpacity, flex: 1, paddingBottom: 20 }}>
+        <Text
+          style={{
+            paddingVertical: 5,
+            fontSize: 38,
+            color: "white",
+            textAlign: "center",
 
-              fontFamily: "BlackOpsOne_400Regular",
-            }}
-          >
-            {newWorkoutName}
-          </Text>
-          <Text
-            style={{
-              fontSize: 28,
-              color: "white",
-              textAlign: "center",
-              elevation: 40,
-              fontFamily: "BlackOpsOne_400Regular",
-              paddingTop: 20,
-            }}
-          >
-            Übungsname:
-          </Text>
-          <TextInput
-            style={styles.textInputField}
-            label="Name der Übung"
-            mode={"outlined"}
-            selectionColor="blue"
-            activeOutlineColor="black"
-          />
+            fontFamily: "BlackOpsOne_400Regular",
+          }}
+        >
+          {newWorkoutName}
+        </Text>
+        <Text
+          style={{
+            fontSize: 28,
+            color: "white",
+            textAlign: "center",
+            elevation: 40,
+            fontFamily: "BlackOpsOne_400Regular",
+            paddingTop: 5,
+          }}
+        >
+          Übungsname:
+        </Text>
+        <TextInput
+          style={styles.textInputField}
+          label="Name der Übung"
+          mode={"outlined"}
+          selectionColor="blue"
+          activeOutlineColor="black"
+          onChangeText={(text) => setExercieName(text)}
+          value={exericeName}
+        />
 
-          <Button
-            mode="contained"
-            labelStyle={{ fontFamily: "BlackOpsOne_400Regular", fontSize: 20 }}
-            style={{ marginTop: 30 }}
-          >
-            Hinzufügen
-          </Button>
-          <Button
-            mode="contained"
-            labelStyle={{ fontFamily: "BlackOpsOne_400Regular", fontSize: 20 }}
-            style={{ marginTop: 30, marginBottom: 50 }}
-          >
-            Workout speichern
-          </Button>
-          <Text
-            style={{
-              fontSize: 28,
-              color: "white",
-              textAlign: "center",
-              elevation: 40,
-              fontFamily: "BlackOpsOne_400Regular",
-              paddingTop: 20,
-            }}
-          >
-            Übersicht
-          </Text>
-          <FlatList
-            data={DATA}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-      </ImageBackground>
-    </Portal>
+        <Button
+          mode="contained"
+          labelStyle={{ fontFamily: "BlackOpsOne_400Regular", fontSize: 20 }}
+          style={{ marginTop: 30 }}
+          onPress={() => addToList()}
+        >
+          Hinzufügen
+        </Button>
+        <Button
+          mode="contained"
+          labelStyle={{ fontFamily: "BlackOpsOne_400Regular", fontSize: 20 }}
+          style={{ marginTop: 30, marginBottom: 50 }}
+        >
+          Workout speichern
+        </Button>
+        <Text
+          style={{
+            fontSize: 28,
+            color: "white",
+            textAlign: "center",
+            elevation: 5,
+            fontFamily: "BlackOpsOne_400Regular",
+          }}
+        >
+          Übersicht
+        </Text>
+
+        <FlatList
+          data={listArr}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  textInputField: { marginVertical: 10, paddingTop: 10 },
+  textInputField: { paddingTop: 10 },
 });

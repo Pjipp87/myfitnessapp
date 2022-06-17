@@ -6,6 +6,7 @@ import Startpage from "./Components/Startpage";
 import { createStackNavigator } from "@react-navigation/stack";
 import CreateWorkoutScreen from "./Components/CreateWorkoutScreen";
 import { Provider } from "react-native-paper";
+import "react-native-get-random-values";
 
 const Stack = createStackNavigator();
 
