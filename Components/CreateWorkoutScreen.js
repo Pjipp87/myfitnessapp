@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
-import { TextInput, Button } from "react-native-paper";
+import { TextInput, Button, Portal, Modal } from "react-native-paper";
 import {
   useFonts,
   BlackOpsOne_400Regular,
@@ -38,8 +38,10 @@ const Item = ({ title }) => (
   </View>
 );
 
-export default function CreateWorkoutScreen() {
-  const [newWorkoutName, setNewWorkoutName] = useState("Dein neues Workout");
+export default function CreateWorkoutScreen({ navigation }) {
+  const [newWorkoutName, setNewWorkoutName] = useState("");
+  const [showNameModal, setShowNameModal] = useState(true);
+  const [frameOpacity, setFrameOpacity] = useState(0);
 
   let [fontsLoaded] = useFonts({
     BlackOpsOne_400Regular,
@@ -48,6 +50,14 @@ export default function CreateWorkoutScreen() {
     return null;
   }
 
+  const nameNewWorkout = () => {
+    if (newWorkoutName !== "") {
+      setFrameOpacity(1), setShowNameModal(false);
+    } else {
+      alert("Bitte einen Namen eingeben");
+    }
+  };
+
   //####################################################################
 
   const renderItem = ({ item }) => <Item title={item.title} />;
@@ -55,73 +65,128 @@ export default function CreateWorkoutScreen() {
   //#####################################################################
 
   return (
-    <ImageBackground
-      source={require("../images/BackgroundImages/iron-plate.jpg")}
-      style={{ flex: 1 }}
-    >
-      <View style={{ paddingTop: 20 }}>
-        <Text
-          style={{
-            fontSize: 36,
-            color: "white",
-            textAlign: "center",
-            elevation: 30,
-            fontFamily: "BlackOpsOne_400Regular",
-          }}
-        >
-          Neues Workout:
-        </Text>
-        <TextInput
-          style={styles.textInputField}
-          label="Workout Name"
-          mode={"outlined"}
-          selectionColor="blue"
-          activeOutlineColor="black"
-        ></TextInput>
-      </View>
-      <Text
-        style={{
-          fontSize: 28,
-          color: "white",
-          textAlign: "center",
-          elevation: 40,
-          fontFamily: "BlackOpsOne_400Regular",
-        }}
+    <Portal>
+      <ImageBackground
+        source={require("../images/BackgroundImages/iron-plate.jpg")}
+        style={{ flex: 1 }}
       >
-        Übungsname:
-      </Text>
-      <TextInput
-        style={styles.textInputField}
-        label="Name der Übung"
-        mode={"outlined"}
-        selectionColor="blue"
-        activeOutlineColor="black"
-      />
+        <Portal>
+          <Modal visible={showNameModal}>
+            <View
+              style={{
+                paddingVertical: 20,
+                backgroundColor: "grey",
+                borderWidth: 5,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 36,
+                  color: "white",
+                  textAlign: "center",
+                  elevation: 30,
+                  fontFamily: "BlackOpsOne_400Regular",
+                }}
+              >
+                Neues Workout:
+              </Text>
+              <TextInput
+                style={styles.textInputField}
+                label="Workout Name"
+                mode={"outlined"}
+                selectionColor="blue"
+                activeOutlineColor="black"
+                onChangeText={(text) => setNewWorkoutName(text)}
+              ></TextInput>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+              >
+                <Button
+                  mode="contained"
+                  labelStyle={{ fontFamily: "BlackOpsOne_400Regular" }}
+                  onPress={() => navigation.navigate("Navigation")}
+                >
+                  Abbrechen
+                </Button>
+                <Button
+                  mode="contained"
+                  labelStyle={{ fontFamily: "BlackOpsOne_400Regular" }}
+                  onPress={() => nameNewWorkout()}
+                >
+                  Hinzufügen
+                </Button>
+              </View>
+            </View>
+          </Modal>
+        </Portal>
 
-      <Button
-        mode="contained"
-        labelStyle={{ fontFamily: "BlackOpsOne_400Regular" }}
-      >
-        Hinzufügen
-      </Button>
-      <Text
-        style={{
-          paddingVertical: 30,
-          fontSize: 30,
-          color: "white",
-          textAlign: "center",
+        <View style={{ opacity: frameOpacity }}>
+          <Text
+            style={{
+              paddingVertical: 30,
+              fontSize: 30,
+              color: "white",
+              textAlign: "center",
 
-          fontFamily: "BlackOpsOne_400Regular",
-        }}
-      >
-        {newWorkoutName}
-      </Text>
-      <FlatList
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
-    </ImageBackground>
+              fontFamily: "BlackOpsOne_400Regular",
+            }}
+          >
+            {newWorkoutName}
+          </Text>
+          <Text
+            style={{
+              fontSize: 28,
+              color: "white",
+              textAlign: "center",
+              elevation: 40,
+              fontFamily: "BlackOpsOne_400Regular",
+              paddingTop: 20,
+            }}
+          >
+            Übungsname:
+          </Text>
+          <TextInput
+            style={styles.textInputField}
+            label="Name der Übung"
+            mode={"outlined"}
+            selectionColor="blue"
+            activeOutlineColor="black"
+          />
+
+          <Button
+            mode="contained"
+            labelStyle={{ fontFamily: "BlackOpsOne_400Regular", fontSize: 20 }}
+            style={{ marginTop: 30 }}
+          >
+            Hinzufügen
+          </Button>
+          <Button
+            mode="contained"
+            labelStyle={{ fontFamily: "BlackOpsOne_400Regular", fontSize: 20 }}
+            style={{ marginTop: 30, marginBottom: 50 }}
+          >
+            Workout speichern
+          </Button>
+          <Text
+            style={{
+              fontSize: 28,
+              color: "white",
+              textAlign: "center",
+              elevation: 40,
+              fontFamily: "BlackOpsOne_400Regular",
+              paddingTop: 20,
+            }}
+          >
+            Übersicht
+          </Text>
+          <FlatList
+            data={DATA}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        </View>
+      </ImageBackground>
+    </Portal>
   );
 }
 
