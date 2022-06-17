@@ -1,14 +1,5 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Keyboard,
-  ScrollView,
-  SafeAreaView,
-  Touchable,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, FlatList, Keyboard } from "react-native";
+import React, { useContext, useState } from "react";
 import { ImageBackground } from "react-native";
 import { TextInput, Button, Portal, Modal } from "react-native-paper";
 import {
@@ -16,30 +7,38 @@ import {
   BlackOpsOne_400Regular,
 } from "@expo-google-fonts/black-ops-one";
 import { v4 as uuidv4 } from "uuid";
+import { Context } from "./Context/Context";
 
-const Item = ({ title }) => (
+const Item = ({ title, id, deleteFromList }) => (
   <View
     style={{
       paddingVertical: 5,
       elevation: 10,
-      height: "100%",
       backgroundColor: "white",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+      paddingVertical: 5,
+      marginVertical: 5,
     }}
   >
-    <Text
+    <View
       style={{
-        textAlign: "center",
-        fontFamily: "BlackOpsOne_400Regular",
-        paddingVertical: 10,
-        fontSize: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
-      {title}
-    </Text>
-    <Button>Löschen</Button>
+      <Text
+        style={{
+          textAlign: "center",
+          fontFamily: "BlackOpsOne_400Regular",
+          paddingVertical: 10,
+          fontSize: 20,
+          paddingLeft: "5%",
+        }}
+      >
+        {title}
+      </Text>
+      <Button onPress={() => deleteFromList({ id })}>Löschen</Button>
+    </View>
   </View>
 );
 
@@ -49,8 +48,7 @@ export default function CreateWorkoutScreen({ navigation }) {
   const [frameOpacity, setFrameOpacity] = useState(0);
   const [exericeName, setExercieName] = useState("");
   const [listArr, setListArr] = useState([]);
-
-  useEffect(() => {}, [DATA]);
+  const { updateSQLDB } = useContext(Context);
 
   let [fontsLoaded] = useFonts({
     BlackOpsOne_400Regular,
@@ -58,21 +56,6 @@ export default function CreateWorkoutScreen({ navigation }) {
   if (!fontsLoaded) {
     return null;
   }
-
-  let DATA = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "First Item",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "Second Item",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item",
-    },
-  ];
 
   const nameNewWorkout = () => {
     if (newWorkoutName !== "") {
@@ -83,15 +66,32 @@ export default function CreateWorkoutScreen({ navigation }) {
   };
 
   const addToList = () => {
-    var tempArr = [...listArr, { id: uuidv4(), title: exericeName }];
-    setListArr(tempArr);
-    setExercieName("");
-    Keyboard.dismiss();
+    if (exericeName !== "") {
+      var tempArr = [...listArr, { id: uuidv4(), title: exericeName }];
+      setListArr(tempArr);
+      setExercieName("");
+      Keyboard.dismiss();
+    } else {
+      alert("Bitte in Namen für die Übung eingeben!");
+    }
+  };
+
+  const deleteFromList = (itemid) => {
+    const newList = listArr.filter((item) => item.id !== itemid.id);
+    setListArr(newList);
+  };
+
+  const saveList = () => {
+    updateSQLDB(["Data", "in", "array"]);
+    //alert("Noch nicht implementiert!");
+    navigation.navigate("Navigation");
   };
 
   //####################################################################
 
-  const renderItem = ({ item }) => <Item title={item.title} />;
+  const renderItem = ({ item }) => (
+    <Item title={item.title} id={item.id} deleteFromList={deleteFromList} />
+  );
 
   //#####################################################################
 
@@ -197,6 +197,7 @@ export default function CreateWorkoutScreen({ navigation }) {
           mode="contained"
           labelStyle={{ fontFamily: "BlackOpsOne_400Regular", fontSize: 20 }}
           style={{ marginTop: 30, marginBottom: 50 }}
+          onPress={() => saveList()}
         >
           Workout speichern
         </Button>
