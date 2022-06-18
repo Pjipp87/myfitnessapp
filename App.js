@@ -18,6 +18,7 @@ import {
 } from "react-native-paper";
 import merge from "deepmerge";
 import { useState, useCallback, useMemo } from "react";
+import * as SQLite from "expo-sqlite";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -55,9 +56,18 @@ const DarkThemeNew = {
 
 const Stack = createStackNavigator();
 
+// SQLite
+const database = SQLite.openDatabase("appData.db");
+
 export default function App() {
   const [isThemeDark, setIsThemeDark] = useState(false);
   const [sqlDB, setSqlDB] = useState([]);
+
+  // Der Funktion executeSQL, können normale SQL befehle übergeben werden
+  // Hier kann eine neue Tablle (Workouts) in der Datenbank "appData.db" erstellt werden
+  useEffect(() => {
+    database.transaction((transaction) => transaction.executeSql(""));
+  }, [sqlDB]);
 
   let theme = isThemeDark ? DarkThemeNew : DefaultThemeNew;
 
