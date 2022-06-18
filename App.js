@@ -19,6 +19,7 @@ import {
 import merge from "deepmerge";
 import { useState, useCallback, useMemo } from "react";
 import * as SQLite from "expo-sqlite";
+import { useEffect } from "react";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -66,7 +67,11 @@ export default function App() {
   // Der Funktion executeSQL, können normale SQL befehle übergeben werden
   // Hier kann eine neue Tablle (Workouts) in der Datenbank "appData.db" erstellt werden
   useEffect(() => {
-    database.transaction((transaction) => transaction.executeSql(""));
+    database.transaction((transaction) =>
+      transaction.executeSql(
+        "CREATE TABLE IF NOT EXISTS workouts (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, workoutname VARCHAR(255))"
+      )
+    );
   }, [sqlDB]);
 
   let theme = isThemeDark ? DarkThemeNew : DefaultThemeNew;
@@ -76,8 +81,19 @@ export default function App() {
   }, [isThemeDark]);
 
   const updateSQLDB = useCallback(
-    (data) => {
-      alert(data);
+    (workoutname, workoutarry) => {
+      /*
+            //hier Datenbank für einzelne Workouts anlegen!
+      database.transaction((transaction) =>
+        transaction
+          .executeSql
+          // Hier SQL Befehl einfügegen:
+          ()
+      );
+      */
+      console.log("Workoutname: " + workoutname);
+      console.log("Workoutarray: ", workoutarry);
+      console.log("Workout1 :" + workoutarry[1]["title"]);
       setSqlDB([]);
     },
     [sqlDB]

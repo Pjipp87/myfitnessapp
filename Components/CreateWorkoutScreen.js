@@ -82,7 +82,7 @@ export default function CreateWorkoutScreen({ navigation }) {
   };
 
   const saveList = () => {
-    updateSQLDB(["Data", "in", "array"]);
+    updateSQLDB(newWorkoutName, listArr);
     //alert("Noch nicht implementiert!");
     navigation.navigate("Navigation");
   };
