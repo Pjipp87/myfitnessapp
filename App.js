@@ -82,18 +82,39 @@ export default function App() {
 
   const updateSQLDB = useCallback(
     (workoutname, workoutarry) => {
-      /*
-            //hier Datenbank für einzelne Workouts anlegen!
-      database.transaction((transaction) =>
-        transaction
-          .executeSql
-          // Hier SQL Befehl einfügegen:
-          ()
-      );
-      */
-      console.log("Workoutname: " + workoutname);
+      let temparr = [...workoutarry];
+      //hier Datenbank für einzelne Workouts anlegen!
+      try {
+        database.transaction((transaction) =>
+          transaction.executeSql(
+            // Hier SQL Befehl einfügegen:
+            "CREATE TABLE IF NOT EXISTS " +
+              workoutname +
+              " (id INTEGER PRIMARY KEY NOT NULL, exercixename TEXT, exerciseuuid TEXT)"
+          )
+        );
+        console.log("Datenbank erstellt");
+      } catch (error) {
+        console.log("Datenbank erstellen Error" + error);
+      }
+
+      for (let i = 0; i < temparr.length; i++) {
+        database.transaction((transaction) =>
+          transaction.executeSql(
+            "INSERT INTO " +
+              workoutname +
+              " (exercixename, exerciseuuid) VALUES (?,?)",
+            [temparr[i]["title"], temparr[i]["id"]],
+            (transaction, result) => console.log(result.insertId)
+          )
+        );
+      }
+
+      /**
+       * console.log("Workoutname: " + workoutname);
       console.log("Workoutarray: ", workoutarry);
       console.log("Workout1 :" + workoutarry[1]["title"]);
+       */
       setSqlDB([]);
     },
     [sqlDB]
