@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import WorkoutScreen from "./Components/WorkoutScreen";
 import ChooseWorkoutScreen from "./Components/ChooseWorkoutScreen";
+import HIITWorkoutScreen from "./Components/HIITWorkoutScreen";
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,11 @@ export default function WorkoutScreenNavigation() {
       <Stack.Screen
         name="ChooseWorkout"
         component={ChooseWorkoutScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HIITWorkout"
+        component={HIITWorkoutScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
