@@ -8,6 +8,8 @@ import {
 } from "@expo-google-fonts/black-ops-one";
 import { v4 as uuidv4 } from "uuid";
 import { Context } from "./Context/Context";
+import { db } from "./Context/firebase";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 
 const Item = ({ title, id, deleteFromList }) => (
   <View
@@ -48,7 +50,6 @@ export default function CreateWorkoutScreen({ navigation }) {
   const [frameOpacity, setFrameOpacity] = useState(0);
   const [exericeName, setExercieName] = useState("");
   const [listArr, setListArr] = useState([]);
-  const { updateSQLDB } = useContext(Context);
 
   let [fontsLoaded] = useFonts({
     BlackOpsOne_400Regular,
@@ -81,8 +82,31 @@ export default function CreateWorkoutScreen({ navigation }) {
     setListArr(newList);
   };
 
-  const saveList = () => {
-    updateSQLDB(newWorkoutName, listArr);
+  const saveList = async () => {
+    try {
+      for (const index of listArr) {
+        /**
+        *  const docRef = await addDoc(collection(db, newWorkoutName), {
+          ExerciseName: index["title"],
+          UUID: index["id"],
+        });
+        console.log("Document written with ID: ", docRef.id);
+        console.log(db.toJSON);
+      }
+        */
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // ggfs nochmal ändern
+        const docRef = await setDoc(
+          doc(db, "Datenbank", "TestUser", "Workouts", newWorkoutName),
+          {
+            ExerciseName: index["title"],
+            UUID: index["id"],
+          }
+        );
+      }
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
     //alert("Noch nicht implementiert!");
     navigation.navigate("Navigation");
   };

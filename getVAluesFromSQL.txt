@@ -1,0 +1,11 @@
+    database.transaction((transaction) =>
+      transaction.executeSql(
+        "SELECT * FROM test WHERE exercixename='test'",
+        [],
+        (transaction, result) => console.log(result.rows._array)
+      )
+    ),
+
+
+
+    

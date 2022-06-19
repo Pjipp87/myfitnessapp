@@ -18,8 +18,6 @@ import {
 } from "react-native-paper";
 import merge from "deepmerge";
 import { useState, useCallback, useMemo } from "react";
-import * as SQLite from "expo-sqlite";
-import { useEffect } from "react";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -57,22 +55,8 @@ const DarkThemeNew = {
 
 const Stack = createStackNavigator();
 
-// SQLite
-const database = SQLite.openDatabase("appData.db");
-
 export default function App() {
   const [isThemeDark, setIsThemeDark] = useState(false);
-  const [sqlDB, setSqlDB] = useState([]);
-
-  // Der Funktion executeSQL, können normale SQL befehle übergeben werden
-  // Hier kann eine neue Tablle (Workouts) in der Datenbank "appData.db" erstellt werden
-  useEffect(() => {
-    database.transaction((transaction) =>
-      transaction.executeSql(
-        "CREATE TABLE IF NOT EXISTS workouts (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, workoutname VARCHAR(255))"
-      )
-    );
-  }, [sqlDB]);
 
   let theme = isThemeDark ? DarkThemeNew : DefaultThemeNew;
 
@@ -80,54 +64,12 @@ export default function App() {
     return setIsThemeDark(!isThemeDark);
   }, [isThemeDark]);
 
-  const updateSQLDB = useCallback(
-    (workoutname, workoutarry) => {
-      let temparr = [...workoutarry];
-      //hier Datenbank für einzelne Workouts anlegen!
-      try {
-        database.transaction((transaction) =>
-          transaction.executeSql(
-            // Hier SQL Befehl einfügegen:
-            "CREATE TABLE IF NOT EXISTS " +
-              workoutname +
-              " (id INTEGER PRIMARY KEY NOT NULL, exercixename TEXT, exerciseuuid TEXT)"
-          )
-        );
-        console.log("Datenbank erstellt");
-      } catch (error) {
-        console.log("Datenbank erstellen Error" + error);
-      }
-
-      for (let i = 0; i < temparr.length; i++) {
-        database.transaction((transaction) =>
-          transaction.executeSql(
-            "INSERT INTO " +
-              workoutname +
-              " (exercixename, exerciseuuid) VALUES (?,?)",
-            [temparr[i]["title"], temparr[i]["id"]],
-            (transaction, result) => console.log(result.insertId)
-          )
-        );
-      }
-
-      /**
-       * console.log("Workoutname: " + workoutname);
-      console.log("Workoutarray: ", workoutarry);
-      console.log("Workout1 :" + workoutarry[1]["title"]);
-       */
-      setSqlDB([]);
-    },
-    [sqlDB]
-  );
-
   const preferences = useMemo(
     () => ({
-      updateSQLDB,
-      sqlDB,
       toggleTheme,
       isThemeDark,
     }),
-    [updateSQLDB, sqlDB, toggleTheme, isThemeDark]
+    [toggleTheme, isThemeDark]
   );
 
   return (
