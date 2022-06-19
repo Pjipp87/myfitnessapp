@@ -18,6 +18,8 @@ import {
 } from "react-native-paper";
 import merge from "deepmerge";
 import { useState, useCallback, useMemo } from "react";
+import ChooseWorkoutScreen from "./Components/ChooseWorkoutScreen";
+import WorkoutScreen from "./Components/WorkoutScreen";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -88,6 +90,7 @@ export default function App() {
                   name="Navigation"
                   component={Navigation}
                   options={{ headerShown: false }}
+                  WorkoutScreen={ChooseWorkoutScreen}
                 />
                 <Stack.Screen
                   name="CreateWorkout"
@@ -101,6 +104,16 @@ export default function App() {
                     headerTitleStyle: { color: "white" },
                     headerStyle: { backgroundColor: "grey" },
                   }}
+                />
+                <Stack.Screen
+                  name="chooseWorkout"
+                  component={ChooseWorkoutScreen}
+                  options={{ headerTitle: "Workout wählen" }}
+                />
+                <Stack.Screen
+                  name="Workout"
+                  component={WorkoutScreen}
+                  options={{ headerTitle: "Workout" }}
                 />
               </Stack.Navigator>
             </NavigationContainer>

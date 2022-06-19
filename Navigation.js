@@ -1,4 +1,5 @@
 import { View, Text } from "react-native";
+
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import WelcomeScreen from "./Components/WelcomeScreen";
@@ -6,6 +7,8 @@ import ProfileScreen from "./Components/ProfileScreen";
 import SettingsScreen from "./Components/SettingsScreen";
 import WorkoutScreen from "./Components/WorkoutScreen";
 import { Ionicons } from "@expo/vector-icons";
+import ChooseWorkoutScreen from "./Components/ChooseWorkoutScreen";
+import WorkoutScreenNavigation from "./WorkoutScreenNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +25,7 @@ export default function Navigation() {
           let iconName;
           if (route.name === "Startseite") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Workout") {
+          } else if (route.name === "WorkoutNav") {
             iconName = focused ? "barbell-sharp" : "barbell-outline";
           } else if (route.name === "Profil") {
             iconName = focused ? "person-circle" : "person-circle-outline";
@@ -39,7 +42,12 @@ export default function Navigation() {
       })}
     >
       <Tab.Screen name="Startseite" component={WelcomeScreen} />
-      <Tab.Screen name="Workout" component={WorkoutScreen} />
+
+      <Tab.Screen
+        name="WorkoutNav"
+        component={WorkoutScreenNavigation}
+        options={{ headerTitle: "Workout" }}
+      />
       <Tab.Screen name="Profil" component={ProfileScreen} />
       <Tab.Screen name="Einstellungen" component={SettingsScreen} />
     </Tab.Navigator>
