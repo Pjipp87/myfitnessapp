@@ -105,6 +105,7 @@ export default function App() {
                     headerStyle: { backgroundColor: "grey" },
                   }}
                 />
+
                 <Stack.Screen
                   name="chooseWorkout"
                   component={ChooseWorkoutScreen}
