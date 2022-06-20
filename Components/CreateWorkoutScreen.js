@@ -88,10 +88,16 @@ export default function CreateWorkoutScreen({ navigation }) {
     const db = getDatabase();
     try {
       listArr.forEach((item) => {
-        update(ref(db, "testuser/workouts/" + newWorkoutName + "/"), {
-          ExersiceName: item.title,
-          ExersiceID: item.id,
-        });
+        update(
+          ref(db, "testuser/workouts/" + newWorkoutName + "/" + item.title),
+          {
+            ExersiceName: item.title,
+            ExersiceID: item.id,
+            repeats: 0,
+            sets: 0,
+            weight: 0,
+          }
+        );
       });
     } catch (e) {
       console.error("Error adding document: ", e);

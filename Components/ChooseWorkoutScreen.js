@@ -6,6 +6,7 @@ import { Switch } from "react-native-paper";
 import { useEffect } from "react";
 import { db } from "./Context/firebase";
 import { collection, query, getDocs, doc, getDoc } from "firebase/firestore";
+import { getDatabase, ref, child, get } from "firebase/database";
 
 const Item = ({ title, switchScreen }) => (
   <View
@@ -51,25 +52,20 @@ export default function ChooseWorkoutScreen({ navigation }) {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await getDataFromFirestore();
-      console.log("test");
-      setWorkoutArray(response);
+      const dbRef = ref(getDatabase());
+      const response = await get(child(dbRef, "testuser/workouts/"));
+      if (response.exists()) {
+        setWorkoutObj(response.val());
+      } else {
+        console.log("Fehler beim Abrufen der Datenbank in ChooseWorkoutScreen");
+      }
     }
     fetchData();
+    //console.log(workoutObj);
   }, []);
 
   const getDataFromFirestore = async () => {
-    let tempArr = [];
-    const docSnap = await getDoc(
-      doc(db, "Datenbank", "TestUser", "Workouts", "Database")
-    );
-    console.log(docSnap.data());
-    if (docSnap.exists()) {
-      console.log("Doc: ", docSnap.data());
-    } else {
-      console.log("Fehler");
-    }
-    return tempArr;
+    let tempObj;
   };
 
   const switchScreen = (name) => {
@@ -107,7 +103,10 @@ export default function ChooseWorkoutScreen({ navigation }) {
       </View>
 
       <Text style={{ color: "white", fontSize: 36 }}>Bitte Workout wählen</Text>
-      <FlatList data={workoutArray} renderItem={renderItem}></FlatList>
+      <FlatList
+        data={Object.keys(workoutObj)}
+        renderItem={renderItem}
+      ></FlatList>
       <Button mode="contained" onPress={() => switchScreen()}>
         Weiter
       </Button>
