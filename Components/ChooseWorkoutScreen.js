@@ -2,7 +2,7 @@ import { View, Text, FlatList } from "react-native";
 import React, { useState } from "react";
 import { Button } from "react-native-paper";
 import { ImageBackground } from "react-native";
-import { Switch } from "react-native-paper";
+import { Switch, Portal, Modal } from "react-native-paper";
 import { useEffect } from "react";
 
 import { getDatabase, ref, child, get } from "firebase/database";
@@ -42,7 +42,6 @@ const Item = ({ title, switchScreen }) => (
 
 export default function ChooseWorkoutScreen({ navigation }) {
   const [intervalltraining, setIntervalltraining] = useState(false);
-  const [workoutArray, setWorkoutArray] = useState([]);
   const [workoutObj, setWorkoutObj] = useState({});
 
   const renderItem = ({ item }) => (
@@ -62,10 +61,6 @@ export default function ChooseWorkoutScreen({ navigation }) {
     fetchData();
     //console.log(workoutObj);
   }, []);
-
-  const getDataFromFirestore = async () => {
-    let tempObj;
-  };
 
   const switchScreen = (name) => {
     if (intervalltraining) {
