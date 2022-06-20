@@ -9,7 +9,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { Context } from "./Context/Context";
 import { db } from "./Context/firebase";
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, addDocs } from "firebase/firestore";
 
 const Item = ({ title, id, deleteFromList }) => (
   <View
@@ -96,8 +96,15 @@ export default function CreateWorkoutScreen({ navigation }) {
         */
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // ggfs nochmal ändern
-        const docRef = await setDoc(
-          doc(db, "Datenbank", "TestUser", "Workouts", newWorkoutName),
+        const docRef = await addDoc(
+          collection(
+            db,
+            "Datenbank",
+            "TestUser",
+            "Workouts",
+            "Database",
+            `${newWorkoutName}`
+          ),
           {
             ExerciseName: index["title"],
             UUID: index["id"],

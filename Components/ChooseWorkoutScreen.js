@@ -5,41 +5,78 @@ import { ImageBackground } from "react-native";
 import { Switch } from "react-native-paper";
 import { useEffect } from "react";
 import { db } from "./Context/firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  query,
-  getDocs,
-} from "firebase/firestore";
+import { collection, query, getDocs, doc, getDoc } from "firebase/firestore";
+
+const Item = ({ title, switchScreen }) => (
+  <View
+    style={{
+      paddingVertical: 5,
+      elevation: 10,
+      backgroundColor: "white",
+      paddingVertical: 5,
+      marginVertical: 5,
+    }}
+  >
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Text
+        style={{
+          textAlign: "center",
+          fontFamily: "BlackOpsOne_400Regular",
+          paddingVertical: 10,
+          fontSize: 20,
+          paddingLeft: "5%",
+        }}
+      >
+        {title}
+      </Text>
+      <Button onPress={() => switchScreen({ title })}>Auswählen</Button>
+    </View>
+  </View>
+);
 
 export default function ChooseWorkoutScreen({ navigation }) {
   const [intervalltraining, setIntervalltraining] = useState(false);
   const [workoutArray, setWorkoutArray] = useState([]);
+  const [workoutObj, setWorkoutObj] = useState({});
+
+  const renderItem = ({ item }) => (
+    <Item title={item} switchScreen={switchScreen} />
+  );
 
   useEffect(() => {
-    getDataFromFirestore();
+    async function fetchData() {
+      const response = await getDataFromFirestore();
+      console.log("test");
+      setWorkoutArray(response);
+    }
+    fetchData();
   }, []);
 
   const getDataFromFirestore = async () => {
-    const q = query(collection(db, "Datenbank", "TestUser", "Workouts"));
     let tempArr = [];
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
-      tempArr.push(doc.id.toString());
-    });
-    setWorkoutArray();
-    console.log(workoutArray);
+    const docSnap = await getDoc(
+      doc(db, "Datenbank", "TestUser", "Workouts", "Database")
+    );
+    console.log(docSnap.data());
+    if (docSnap.exists()) {
+      console.log("Doc: ", docSnap.data());
+    } else {
+      console.log("Fehler");
+    }
+    return tempArr;
   };
 
-  const switchScreen = () => {
+  const switchScreen = (name) => {
     if (intervalltraining) {
       navigation.navigate("HIITWorkout");
     } else if (!intervalltraining) {
-      navigation.navigate("Workout");
+      navigation.navigate("Workout", { workoutName: name.title });
     }
   };
 
@@ -54,6 +91,7 @@ export default function ChooseWorkoutScreen({ navigation }) {
           width: "100%",
           flexDirection: "row",
           justifyContent: "space-evenly",
+          elevation: 5,
         }}
       >
         <Text
@@ -69,7 +107,7 @@ export default function ChooseWorkoutScreen({ navigation }) {
       </View>
 
       <Text style={{ color: "white", fontSize: 36 }}>Bitte Workout wählen</Text>
-      <FlatList data={workoutArray}></FlatList>
+      <FlatList data={workoutArray} renderItem={renderItem}></FlatList>
       <Button mode="contained" onPress={() => switchScreen()}>
         Weiter
       </Button>
