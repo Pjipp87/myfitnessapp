@@ -10,6 +10,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Context } from "./Context/Context";
 import { db } from "./Context/firebase";
 import { collection, addDoc, setDoc, doc, addDocs } from "firebase/firestore";
+import { database } from "./Context/firebase";
+import { getDatabase, ref, set, update } from "firebase/database";
 
 const Item = ({ title, id, deleteFromList }) => (
   <View
@@ -83,34 +85,14 @@ export default function CreateWorkoutScreen({ navigation }) {
   };
 
   const saveList = async () => {
+    const db = getDatabase();
     try {
-      for (const index of listArr) {
-        /**
-        *  const docRef = await addDoc(collection(db, newWorkoutName), {
-          ExerciseName: index["title"],
-          UUID: index["id"],
+      listArr.forEach((item) => {
+        update(ref(db, "testuser/workouts/" + newWorkoutName + "/"), {
+          ExersiceName: item.title,
+          ExersiceID: item.id,
         });
-        console.log("Document written with ID: ", docRef.id);
-        console.log(db.toJSON);
-      }
-        */
-        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        // ggfs nochmal ändern
-        const docRef = await addDoc(
-          collection(
-            db,
-            "Datenbank",
-            "TestUser",
-            "Workouts",
-            "Database",
-            `${newWorkoutName}`
-          ),
-          {
-            ExerciseName: index["title"],
-            UUID: index["id"],
-          }
-        );
-      }
+      });
     } catch (e) {
       console.error("Error adding document: ", e);
     }
