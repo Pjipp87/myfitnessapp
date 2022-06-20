@@ -101,9 +101,6 @@ export default function ChooseWorkoutScreen({ navigation }) {
         data={Object.keys(workoutObj)}
         renderItem={renderItem}
       ></FlatList>
-      <Button mode="contained" onPress={() => switchScreen()}>
-        Weiter
-      </Button>
     </ImageBackground>
   );
 }

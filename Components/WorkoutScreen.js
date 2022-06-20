@@ -2,7 +2,7 @@ import { View, Text, FlatList } from "react-native";
 import React, { useState, useEffect } from "react";
 import { ImageBackground } from "react-native";
 import { Button, TextInput, Portal, Modal } from "react-native-paper";
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, child, get, update } from "firebase/database";
 import { TouchableOpacity } from "react-native";
 import { async } from "@firebase/util";
 
@@ -60,7 +60,7 @@ const Item = ({ title, reps, sets, weight, showModal, uuid }) => (
   </TouchableOpacity>
 );
 
-export default function WorkoutScreen({ route }) {
+export default function WorkoutScreen({ route, navigation }) {
   const { workoutName } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [exerciseObject, setExerciseObject] = useState({});
@@ -71,20 +71,21 @@ export default function WorkoutScreen({ route }) {
   const [uuid, setUuid] = useState("");
 
   useEffect(() => {
-    async function fetchData() {
-      const dbRef = ref(getDatabase());
-      const response = await get(
-        child(dbRef, "testuser/workouts/" + workoutName + "/")
-      );
-      if (response.exists()) {
-        setExerciseObject(response.val());
-      } else {
-        console.log("Fehler beim Abrufen der Datenbank in ChooseWorkoutScreen");
-      }
-    }
     fetchData();
     //console.log("Ausgabe", exerciseObject);
   }, []);
+
+  async function fetchData() {
+    const dbRef = ref(getDatabase());
+    const response = await get(
+      child(dbRef, "testuser/workouts/" + workoutName + "/")
+    );
+    if (response.exists()) {
+      setExerciseObject(response.val());
+    } else {
+      console.log("Fehler beim Abrufen der Datenbank in ChooseWorkoutScreen");
+    }
+  }
 
   const showModal = (title, reps, sets, weight, uuid) => {
     setTitle(title);
@@ -110,7 +111,28 @@ export default function WorkoutScreen({ route }) {
     console.log("Sätze", sets);
     console.log("Gewicht", weight);
     console.log("UUID", uuid);
+    const db = getDatabase();
+    try {
+      update(ref(db, "testuser/workouts/" + workoutName + "/" + title), {
+        ExersiceName: title,
+        ExersiceID: uuid,
+        repeats: reps,
+        sets: sets,
+        weight: weight,
+      });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+    fetchData();
     closeModal();
+  };
+
+  const saveDataToDB = () => {
+    /**
+     * TODO: Daten in Firestore Datenbank Speichern und Daten in der RealtimeDatabase zurücksetzen. Das ExerciseObject in einer foreach-Loop ändern
+     * TODO: Oder alten Datenbestand beibehalten und bei jeder Änderung der Daten eine neue Struktur ("History" - ähnlich Workouts) anlegen und das Workout nach Datum speichern
+     */
+    navigation.navigate("ChooseWorkout");
   };
 
   return (
@@ -210,6 +232,20 @@ export default function WorkoutScreen({ route }) {
         )}
         style={{ width: "95%" }}
       ></FlatList>
+      <Button
+        style={{ marginBottom: 25 }}
+        mode="contained"
+        onPress={() => navigation.navigate("ChooseWorkout")}
+      >
+        Workout abbrechen
+      </Button>
+      <Button
+        style={{ marginBottom: 25 }}
+        mode="contained"
+        onPress={() => saveDataToDB()}
+      >
+        Heutiges Workout Speichern
+      </Button>
     </ImageBackground>
   );
 }
