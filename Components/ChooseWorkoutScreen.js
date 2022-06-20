@@ -4,8 +4,7 @@ import { Button } from "react-native-paper";
 import { ImageBackground } from "react-native";
 import { Switch } from "react-native-paper";
 import { useEffect } from "react";
-import { db } from "./Context/firebase";
-import { collection, query, getDocs, doc, getDoc } from "firebase/firestore";
+
 import { getDatabase, ref, child, get } from "firebase/database";
 
 const Item = ({ title, switchScreen }) => (
