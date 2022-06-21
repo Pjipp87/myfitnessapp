@@ -2,8 +2,9 @@ import { View, Text, FlatList } from "react-native";
 import React, { useState, useEffect } from "react";
 import { ImageBackground } from "react-native";
 import { Button, TextInput, Portal, Modal } from "react-native-paper";
-import { getDatabase, ref, child, get, update } from "firebase/database";
+import { getDatabase, ref, child, get, update, set } from "firebase/database";
 import { TouchableOpacity } from "react-native";
+import { database } from "./Context/firebase";
 import { async } from "@firebase/util";
 
 const Item = ({ title, reps, sets, weight, showModal, uuid }) => (
@@ -69,6 +70,9 @@ export default function WorkoutScreen({ route, navigation }) {
   const [sets, setSets] = useState(0);
   const [weight, setWeight] = useState(0);
   const [uuid, setUuid] = useState("");
+  var today = new Date();
+  let date =
+    today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
 
   useEffect(() => {
     fetchData();
@@ -132,6 +136,55 @@ export default function WorkoutScreen({ route, navigation }) {
      * TODO: Daten in Firestore Datenbank Speichern und Daten in der RealtimeDatabase zurücksetzen. Das ExerciseObject in einer foreach-Loop ändern
      * TODO: Oder alten Datenbestand beibehalten und bei jeder Änderung der Daten eine neue Struktur ("History" - ähnlich Workouts) anlegen und das Workout nach Datum speichern
      */
+    const db = getDatabase();
+    for (const key in exerciseObject) {
+      console.log(key + ":" + exerciseObject[key]["ExersiceID"]);
+      try {
+        update(
+          ref(
+            db,
+            "testuser/history/" +
+              date +
+              "/" +
+              workoutName +
+              "/" +
+              exerciseObject[key]["ExersiceName"] +
+              "/"
+          ),
+          {
+            ExersiceName: exerciseObject[key]["ExersiceName"],
+            ExersiceID: exerciseObject[key]["ExersiceID"],
+            repeats: exerciseObject[key]["repeats"],
+            sets: exerciseObject[key]["sets"],
+            weight: exerciseObject[key]["weight"],
+          }
+        );
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+      try {
+        update(
+          ref(
+            db,
+            "testuser/workouts/" +
+              workoutName +
+              "/" +
+              exerciseObject[key]["ExersiceName"] +
+              "/"
+          ),
+          {
+            ExersiceName: exerciseObject[key]["ExersiceName"],
+            ExersiceID: exerciseObject[key]["ExersiceID"],
+            repeats: 0,
+            sets: 0,
+            weight: 0,
+          }
+        );
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
+    console.log(date);
     navigation.navigate("ChooseWorkout");
   };
 
