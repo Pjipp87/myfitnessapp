@@ -64,7 +64,7 @@ export default function ChooseWorkoutScreen({ navigation }) {
 
   const switchScreen = (name) => {
     if (intervalltraining) {
-      navigation.navigate("HIITWorkout");
+      navigation.navigate("HIITWorkout", { workoutName: name.title });
     } else if (!intervalltraining) {
       navigation.navigate("Workout", { workoutName: name.title });
     }
