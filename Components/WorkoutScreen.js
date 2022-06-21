@@ -133,8 +133,7 @@ export default function WorkoutScreen({ route, navigation }) {
 
   const saveDataToDB = () => {
     /**
-     * TODO: Daten in Firestore Datenbank Speichern und Daten in der RealtimeDatabase zurücksetzen. Das ExerciseObject in einer foreach-Loop ändern
-     * TODO: Oder alten Datenbestand beibehalten und bei jeder Änderung der Daten eine neue Struktur ("History" - ähnlich Workouts) anlegen und das Workout nach Datum speichern
+     * TODO: RealtimeDatabase abfreage avlidieren. Sicherstellen, das kein Workout überschrieben wird
      */
     const db = getDatabase();
     for (const key in exerciseObject) {

@@ -1,2 +1,3 @@
 Workouthistory in Firestore speichern
-    
+
+ TODO: RealtimeDatabase abfreage avlidieren. Sicherstellen, das kein Workout überschrieben wird
