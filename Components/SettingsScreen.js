@@ -30,8 +30,17 @@ export default function SettingsScreen() {
   return (
     <View>
       <Text>SettingsScreen Test</Text>
-      <Text>TestScreen</Text>
-      <Button onPress={() => playSound()}>Soundtest</Button>
+      <View>
+        <View>
+          <Text style={{ marginVertical: 20 }}>Soundtest</Text>
+          <Button mode="contained" onPress={() => playSound()}>
+            Soundtest
+          </Button>
+        </View>
+        <View>
+          <Text style={{ marginVertical: 20 }}>Timertest</Text>
+        </View>
+      </View>
     </View>
   );
 }
