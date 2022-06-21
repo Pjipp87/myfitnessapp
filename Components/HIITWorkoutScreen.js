@@ -4,7 +4,7 @@ import { ImageBackground } from "react-native";
 import { Button, Portal, Modal, TextInput } from "react-native-paper";
 import { getDatabase, ref, child, get, update, set } from "firebase/database";
 
-const Item = ({ title, seconds }) => (
+const Item = ({ title, seconds, opacity }) => (
   <View
     style={{
       paddingVertical: 5,
@@ -12,6 +12,7 @@ const Item = ({ title, seconds }) => (
       backgroundColor: "white",
       paddingVertical: 5,
       marginVertical: 5,
+      opacity: opacity,
     }}
   >
     <View
@@ -148,9 +149,17 @@ export default function HIITWorkoutScreen({ route, navigation }) {
         <Text style={{ color: "white" }}>Training: {activeSeconds}</Text>
         <Text style={{ color: "white" }}>Pause: {restSeconds}</Text>
         <Text style={{ color: "white" }}>Aktuelle</Text>
-        <Item title={Object.keys(exerciseObject)[now]} seconds={0}></Item>
+        <Item
+          title={Object.keys(exerciseObject)[now]}
+          seconds={0}
+          opacity={1}
+        ></Item>
         <Text style={{ color: "white" }}>Nächste</Text>
-        <Item title={Object.keys(exerciseObject)[now + 1]} seconds={0}></Item>
+        <Item
+          title={Object.keys(exerciseObject)[now + 1]}
+          seconds={0}
+          opacity={0.5}
+        ></Item>
       </View>
       {/**
  <FlatList
@@ -158,7 +167,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
         renderItem={({ item }) => <Item title={item} seconds={activeSeconds} />}
         style={{ width: "95%", height: "20%" }}
         ItemSeparatorComponent={() => (
-          <Item title={"Pause"} seconds={restSeconds} />
+          <Item title={"Pause"} seconds={restSeconds} opacity={1}/>
         )}
       ></FlatList>
  */}
