@@ -53,6 +53,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
   const [setupModalVisible, setSetupModalVisible] = useState(true);
   const [exerciseObject, setExerciseObject] = useState({});
   const { workoutName } = route.params;
+  const [now, setNow] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -146,9 +147,13 @@ export default function HIITWorkoutScreen({ route, navigation }) {
         <Text style={{ color: "white" }}>HIIT {workoutName}</Text>
         <Text style={{ color: "white" }}>Training: {activeSeconds}</Text>
         <Text style={{ color: "white" }}>Pause: {restSeconds}</Text>
-        <Item title={Object.keys(exerciseObject)[0]} seconds={0}></Item>
+        <Text style={{ color: "white" }}>Aktuelle</Text>
+        <Item title={Object.keys(exerciseObject)[now]} seconds={0}></Item>
+        <Text style={{ color: "white" }}>Nächste</Text>
+        <Item title={Object.keys(exerciseObject)[now + 1]} seconds={0}></Item>
       </View>
-      <FlatList
+      {/**
+ <FlatList
         data={Object.keys(exerciseObject)}
         renderItem={({ item }) => <Item title={item} seconds={activeSeconds} />}
         style={{ width: "95%", height: "20%" }}
@@ -156,6 +161,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
           <Item title={"Pause"} seconds={restSeconds} />
         )}
       ></FlatList>
+ */}
       <View
         style={{
           flexDirection: "row",
