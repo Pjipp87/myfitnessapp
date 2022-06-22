@@ -1,18 +1,28 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Button } from "react-native-paper";
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 
 export default function SettingsScreen() {
-  const [counter, setCounter] = useState(0);
+  const [newTimer, setNewTimer] = useState(50);
+  const [startNewTimer, setStartNewTimer] = useState(false);
 
-  let countdown = 0;
   useEffect(() => {
-    setInterval(() => {
-      countdown++;
-      setCounter(countdown);
-      console.log(countdown);
-    }, 500);
-  }, [counter]);
+    if (startNewTimer) {
+      const timer =
+        newTimer > 0 && setInterval(() => setNewTimer(newTimer - 1), 1);
+
+      if (newTimer === 0) {
+        // countdown is finished
+        setStartNewTimer(false);
+        // update your redux state here
+        // updateReduxCounter(0);
+        alert("Timer beendet");
+      }
+
+      return () => clearInterval(timer);
+    }
+  }, [startNewTimer, newTimer]);
 
   return (
     <View>
@@ -28,9 +38,14 @@ export default function SettingsScreen() {
           <Text style={{ marginVertical: 20 }}>Timertest</Text>
           <View style={{ flexDirection: "row" }}>
             <Text>Counter</Text>
-            <Text>{counter}</Text>
-            <Button onPress={() => startCounter()}>Start</Button>
-            <Button onPress={() => stopTimer()}>Stop</Button>
+            <Text>{newTimer}</Text>
+            <Button
+              onPress={() => {
+                setStartNewTimer(true);
+              }}
+            >
+              Start
+            </Button>
           </View>
         </View>
       </View>

@@ -58,60 +58,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
   const [exerciseObject, setExerciseObject] = useState({});
   const { workoutName } = route.params;
   const [now, setNow] = useState(0);
-  const [counterWorkout, setCounterWorkout] = useState(false);
-  const [pause, setPause] = useState(false);
-  const [pauseVisible, setPauseVisible] = useState(false);
-  const [loop, setloop] = useState();
-
-  function IntervallWatch() {
-    if (pauseVisible && loop > 0) {
-      return (
-        <CountdownCircleTimer
-          isPlaying={pause}
-          duration={restSeconds}
-          colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-          colorsTime={[10, 6, 3, 0]}
-          onComplete={() => ({ shouldRepeat: true, delay: activeSeconds })}
-          onUpdate={(remainingTime) =>
-            remainingTime === 0 ? pauseFunc() : undefined
-          }
-        >
-          {({ remainingTime, color }) => (
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text>Pause</Text>
-              <Text style={{ color, fontSize: 40 }}>
-                {remainingTime === 0 ? "Pause" : remainingTime}
-              </Text>
-            </View>
-          )}
-        </CountdownCircleTimer>
-      );
-    } else if (!pauseVisible && loop > 0) {
-      return (
-        <CountdownCircleTimer
-          isPlaying={counterWorkout}
-          duration={activeSeconds}
-          colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-          colorsTime={[10, 6, 3, 0]}
-          onComplete={() => ({ shouldRepeat: true, delay: restSeconds })}
-          onUpdate={(remainingTime) =>
-            remainingTime === 0 ? workoutFunc() : undefined
-          }
-        >
-          {({ remainingTime, color }) => (
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-              <Text>Workout</Text>
-              <Text style={{ color, fontSize: 40 }}>
-                {remainingTime === 0 ? "Pause" : remainingTime}
-              </Text>
-            </View>
-          )}
-        </CountdownCircleTimer>
-      );
-    } else {
-      return null;
-    }
-  }
+  const [workoutLength, setWorkoutLenght] = useState(0);
 
   const playSound = async () => {
     console.log("Loading Sound");
@@ -123,6 +70,47 @@ export default function HIITWorkoutScreen({ route, navigation }) {
     console.log("Playing Sound");
     await sound.playAsync();
   };
+
+  //#################################################################
+
+  const [newTimer, setNewTimer] = useState(activeSeconds);
+  const [startNewTimer, setStartNewTimer] = useState(activeSeconds);
+
+  const [pause, setPause] = useState(false);
+
+  useEffect(() => {
+    if (startNewTimer && now <= workoutLength) {
+      const timer =
+        newTimer > 0 && setInterval(() => setNewTimer(newTimer - 1), 100);
+      if (newTimer === 0) {
+        if (now - 1 === 3) {
+          setStartNewTimer(false);
+          setNewTimer(0);
+          playSound();
+          alert("Fertig");
+        } else if (!pause) {
+          setNewTimer(restSeconds);
+          setPause(true);
+          playSound();
+        } else if (pause) {
+          setNewTimer(activeSeconds);
+          setNow(now - 1);
+          setPause(false);
+          playSound();
+          setNow(now + 1);
+        }
+      }
+
+      return () => clearInterval(timer);
+    }
+  }, [startNewTimer, newTimer]);
+
+  const startCounddown = () => {
+    setNewTimer(activeSeconds);
+    setStartNewTimer(true);
+  };
+
+  //#################################################################
 
   useEffect(() => {
     return sound
@@ -136,7 +124,9 @@ export default function HIITWorkoutScreen({ route, navigation }) {
   useEffect(() => {
     fetchData();
     //console.log("Ausgabe", exerciseObject);
-  }, []);
+    setWorkoutLenght(Object.keys(exerciseObject).length);
+    console.log(workoutLength);
+  }, [newTimer]);
 
   async function fetchData() {
     const dbRef = ref(getDatabase());
@@ -150,48 +140,18 @@ export default function HIITWorkoutScreen({ route, navigation }) {
     }
   }
 
-  const workoutFunc = () => {
-    playSound();
-    setPause(true);
-    setPauseVisible(true);
-    setNow(now + 1);
-  };
-
-  const pauseFunc = () => {
-    console.log(loop);
-    if (loop === 0) {
-      setPause(false);
-      setPlaying(false);
-      playSound();
-      setPauseVisible(false);
-    } else {
-      setloop(loop - 1);
-      playSound();
-      setPause(true);
-      setPauseVisible(false);
-    }
-  };
-
-  const startTimer = () => {
-    setloop(Object.keys(exerciseObject).length);
-    setCounterWorkout(true);
-  };
-
-  const stopTimer = () => {
-    setCounterWorkout(false);
-    setNow(0);
-    setCounterWorkout(false);
-    setPause(false);
-    setPauseVisible(false);
-  };
-
   const goBack = () => {
     setSetupModalVisible(false);
     navigation.navigate("ChooseWorkout");
   };
   return (
     <ImageBackground
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+      }}
       source={require("../images/BackgroundImages/iron-plate.jpg")}
     >
       <Portal>
@@ -261,36 +221,54 @@ export default function HIITWorkoutScreen({ route, navigation }) {
         <Text style={{ color: "white" }}>Training: {activeSeconds}</Text>
         <Text style={{ color: "white" }}>Pause: {restSeconds}</Text>
         <Text style={{ color: "white" }}>Aktuelle</Text>
-        <Item
-          title={Object.keys(exerciseObject)[now]}
-          seconds={0}
-          opacity={1}
-        ></Item>
-        <Text style={{ color: "white" }}>Nächste</Text>
-        <Item
-          title={Object.keys(exerciseObject)[now + 1]}
-          seconds={0}
-          opacity={0.5}
-        ></Item>
+
+        {pause ? (
+          <Item
+            title={"Pause"}
+            seconds={!pause ? 0 : newTimer}
+            opacity={1}
+          ></Item>
+        ) : (
+          <Item
+            title={Object.keys(exerciseObject)[now]}
+            seconds={pause ? 0 : newTimer}
+            opacity={1}
+          ></Item>
+        )}
+
+        {Object.keys(exerciseObject)[now + 1] ? (
+          <>
+            <Text style={{ color: "white" }}>Nächste</Text>
+            <Item
+              title={Object.keys(exerciseObject)[now + 1]}
+              seconds={activeSeconds}
+              opacity={0.5}
+            ></Item>
+          </>
+        ) : null}
+
         <View
           style={{
             width: "100%",
             justifyContent: "center",
             paddingVertical: 25,
           }}
-        >
-          <IntervallWatch
-            pause={pause}
-            counterWorkout={counterWorkout}
-            pauseSec={restSeconds}
-            WorkoutSec={activeSeconds}
-            pauseVisible={pauseVisible}
-            pauseFunc={pauseFunc}
-            workoutFunc={workoutFunc}
-            loop={loop}
-          ></IntervallWatch>
-        </View>
+        ></View>
       </View>
+      <View style={{ width: "100%" }}>
+        <Text
+          style={{
+            textAlign: "center",
+            fontFamily: "BlackOpsOne_400Regular",
+            paddingVertical: 10,
+            fontSize: 40,
+          }}
+        >
+          Countdown: {newTimer}
+        </Text>
+      </View>
+
+      <Button onPress={() => startCounddown()}>Starten</Button>
       {/**
  <FlatList
         data={Object.keys(exerciseObject)}
@@ -320,9 +298,9 @@ export default function HIITWorkoutScreen({ route, navigation }) {
           }}
           labelStyle={{ fontSize: 20 }}
           mode="contained"
-          onPress={() => stopTimer()}
+          onPress={() => setNewTimer(false)}
         >
-          Stop
+          X
         </Button>
         <Button
           style={{
@@ -335,7 +313,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
           }}
           labelStyle={{ fontSize: 20 }}
           mode="contained"
-          onPress={() => startTimer()}
+          onPress={() => startCounddown()}
         >
           Start
         </Button>
