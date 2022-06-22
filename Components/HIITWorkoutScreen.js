@@ -1,10 +1,11 @@
 import { View, Text, FlatList } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ImageBackground } from "react-native";
-import { Button, Portal, Modal, TextInput } from "react-native-paper";
+import { Button, Portal, Modal, TextInput, Surface } from "react-native-paper";
 import { getDatabase, ref, child, get, update, set } from "firebase/database";
 import { Audio } from "expo-av";
-import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+
+import { Picker } from "@react-native-picker/picker";
 
 const Item = ({ title, seconds, opacity }) => (
   <View
@@ -59,6 +60,10 @@ export default function HIITWorkoutScreen({ route, navigation }) {
   const { workoutName } = route.params;
   const [now, setNow] = useState(0);
   const [workoutLength, setWorkoutLenght] = useState(0);
+  const seconds = [
+    { id: "Trainingssekunden", label: "", min: 0, max: 60 },
+    { id: "Pausesekunden", label: "", min: 0, max: 60 },
+  ];
 
   const playSound = async () => {
     console.log("Loading Sound");
@@ -75,28 +80,30 @@ export default function HIITWorkoutScreen({ route, navigation }) {
 
   const [newTimer, setNewTimer] = useState(activeSeconds);
   const [startNewTimer, setStartNewTimer] = useState(activeSeconds);
-
+  const [dropdownArray, setdropdownArray] = useState([]);
   const [pause, setPause] = useState(false);
 
   useEffect(() => {
     if (startNewTimer && now <= workoutLength) {
       const timer =
-        newTimer > 0 && setInterval(() => setNewTimer(newTimer - 1), 100);
+        newTimer > 0 && setInterval(() => setNewTimer(newTimer - 1), 1000);
       if (newTimer === 0) {
         if (now - 1 === 3) {
+          playSound();
           setStartNewTimer(false);
           setNewTimer(0);
-          playSound();
+
           alert("Fertig");
         } else if (!pause) {
+          playSound();
           setNewTimer(restSeconds);
           setPause(true);
-          playSound();
         } else if (pause) {
+          playSound();
           setNewTimer(activeSeconds);
           setNow(now - 1);
           setPause(false);
-          playSound();
+
           setNow(now + 1);
         }
       }
@@ -106,8 +113,10 @@ export default function HIITWorkoutScreen({ route, navigation }) {
   }, [startNewTimer, newTimer]);
 
   const startCounddown = () => {
+    playSound();
     setNewTimer(activeSeconds);
     setStartNewTimer(true);
+    setNow(0);
   };
 
   //#################################################################
@@ -144,6 +153,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
     setSetupModalVisible(false);
     navigation.navigate("ChooseWorkout");
   };
+
   return (
     <ImageBackground
       style={{
@@ -156,16 +166,18 @@ export default function HIITWorkoutScreen({ route, navigation }) {
     >
       <Portal>
         <Modal visible={setupModalVisible}>
-          <View
+          <Surface
             style={{
               backgroundColor: "white",
               alignItems: "center",
               paddingVertical: 20,
+              elevation: 5,
             }}
           >
             <Text style={{ paddingVertical: 20 }}>
               Deine Einstellungen für das heutige Training
             </Text>
+
             <View
               style={{
                 flexDirection: "row",
@@ -213,7 +225,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
                 Speichern
               </Button>
             </View>
-          </View>
+          </Surface>
         </Modal>
       </Portal>
       <View style={{ flex: 1 }}>
