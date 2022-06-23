@@ -7,7 +7,7 @@
     "icon": "./assets/dumbbellIcon.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/silhouette-2860007_1280_2.png",
+      "image": "./assets/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#00338B"
     },
