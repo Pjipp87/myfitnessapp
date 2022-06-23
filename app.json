@@ -4,7 +4,7 @@
     "slug": "myfitnessapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/dumbbellIcon.jpg",
+    "icon": "./assets/dumbbellIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/dumbbellIcon.jpg",
+        "foregroundImage": "./assets/dumbbellIcon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.scarfacehbc.myfitnessapp"
