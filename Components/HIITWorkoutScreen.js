@@ -228,29 +228,115 @@ export default function HIITWorkoutScreen({ route, navigation }) {
           </Surface>
         </Modal>
       </Portal>
-      <View style={{ flex: 1 }}>
-        <Text style={{ color: "white" }}>HIIT {workoutName}</Text>
-        <Text style={{ color: "white" }}>Training: {activeSeconds}</Text>
-        <Text style={{ color: "white" }}>Pause: {restSeconds}</Text>
-        <Text style={{ color: "white" }}>Aktuelle</Text>
+      <View style={{ flex: 1, width: "100%" }}>
+        <Text
+          style={{
+            width: "100%",
+            color: "white",
+            textAlign: "center",
+            fontFamily: "BlackOpsOne_400Regular",
+            paddingVertical: 10,
+            fontSize: 40,
+          }}
+        >
+          HIIT {workoutName}
+        </Text>
+        <Text style={{ fontWeight: "bold", fontSize: 22 }}>
+          Training: {activeSeconds} Sekunden
+        </Text>
+        <Text style={{ fontWeight: "bold", fontSize: 22 }}>
+          Pause: {restSeconds} Sekunden
+        </Text>
+        <Text
+          style={{
+            width: "100%",
+            textAlign: "center",
+            fontFamily: "BlackOpsOne_400Regular",
+            fontSize: 30,
+            paddingTop: "10%",
+          }}
+        >
+          Aktuelle Übung
+        </Text>
 
-        {pause ? (
-          <Item
-            title={"Pause"}
-            seconds={!pause ? 0 : newTimer}
-            opacity={1}
-          ></Item>
+        {!pause ? (
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                width: "100%",
+                color: "white",
+                textAlign: "center",
+                fontFamily: "BlackOpsOne_400Regular",
+                paddingVertical: 10,
+                fontSize: 50,
+              }}
+            >
+              Pause
+            </Text>
+            <Text
+              style={{
+                color: "white",
+                textAlign: "center",
+                fontFamily: "BlackOpsOne_400Regular",
+                paddingVertical: 10,
+                fontSize: 50,
+              }}
+            >
+              {newTimer}
+            </Text>
+          </View>
         ) : (
-          <Item
-            title={Object.keys(exerciseObject)[now]}
-            seconds={pause ? 0 : newTimer}
-            opacity={1}
-          ></Item>
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                width: "100%",
+                color: "white",
+                textAlign: "center",
+                fontFamily: "BlackOpsOne_400Regular",
+                paddingVertical: 10,
+                fontSize: 50,
+              }}
+            >
+              {Object.keys(exerciseObject)[now]}
+            </Text>
+            <Text
+              style={{
+                color: "white",
+                textAlign: "center",
+                fontFamily: "BlackOpsOne_400Regular",
+                paddingVertical: 10,
+                fontSize: 50,
+              }}
+            >
+              {newTimer}
+            </Text>
+          </View>
         )}
 
         {Object.keys(exerciseObject)[now + 1] ? (
           <>
-            <Text style={{ color: "white" }}>Nächste</Text>
+            <Text
+              style={{
+                width: "100%",
+                textAlign: "center",
+                fontFamily: "BlackOpsOne_400Regular",
+                fontSize: 28,
+              }}
+            >
+              Nächste
+            </Text>
             <Item
               title={Object.keys(exerciseObject)[now + 1]}
               seconds={activeSeconds}
@@ -267,30 +353,7 @@ export default function HIITWorkoutScreen({ route, navigation }) {
           }}
         ></View>
       </View>
-      <View style={{ width: "100%" }}>
-        <Text
-          style={{
-            textAlign: "center",
-            fontFamily: "BlackOpsOne_400Regular",
-            paddingVertical: 10,
-            fontSize: 40,
-          }}
-        >
-          Countdown: {newTimer}
-        </Text>
-      </View>
 
-      <Button onPress={() => startCounddown()}>Starten</Button>
-      {/**
- <FlatList
-        data={Object.keys(exerciseObject)}
-        renderItem={({ item }) => <Item title={item} seconds={activeSeconds} />}
-        style={{ width: "95%", height: "20%" }}
-        ItemSeparatorComponent={() => (
-          <Item title={"Pause"} seconds={restSeconds} opacity={1}/>
-        )}
-      ></FlatList>
- */}
       <View
         style={{
           flexDirection: "row",
