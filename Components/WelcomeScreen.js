@@ -46,7 +46,6 @@ export default function WelcomeScreen({ navigation }) {
         >
           Workout erstellen
         </Button>
-        <Text style={{ color: "blue" }}>Hallo</Text>
       </View>
     </ImageBackground>
   );
