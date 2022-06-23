@@ -7,9 +7,9 @@
     "icon": "./assets/dumbbellIcon.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/MotivationSplash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
+      "image": "./assets/silhouette-2860007_1280.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#00338B"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/dumbbellIcon.jpg",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.scarfacehbc.myfitnessapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
